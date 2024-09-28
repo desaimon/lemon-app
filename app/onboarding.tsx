@@ -4,6 +4,7 @@ import { View, Text, TextInput, Image, StyleSheet, ActivityIndicator, TouchableO
 import * as Font from 'expo-font';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
+import { useUser } from './UserContext';
 
 const OnboardingScreen = () => {
   const router = useRouter();
@@ -12,8 +13,8 @@ const OnboardingScreen = () => {
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const lastName = '';
-  const phoneNumber = ''; 
-  const imageUri = '';
+  const phoneNumber = '';
+  const {profileImageUri, setProfileImageUri} = useUser(); 
   const [isValidName, setIsValidName] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);  
 
@@ -43,7 +44,7 @@ const OnboardingScreen = () => {
 
   const completeOnboarding = async () => {
     try {      
-      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email, lastName, phoneNumber, imageUri}))
+      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email, lastName, phoneNumber, profileImageUri}))
       await AsyncStorage.setItem('@onboardingComplete', 'true');   
       router.replace('./(drawer)/profile'); 
     } catch(error) {

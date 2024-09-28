@@ -7,7 +7,7 @@ import { CheckBox } from "react-native-elements";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter, useSegments } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { useUser } from "../UserContext";
 
 const ProfileScreen = () => {
   const router = useRouter();
@@ -33,7 +33,8 @@ const ProfileScreen = () => {
     newsletter: false,
   });
 
-  const [imageUri, setImageUri] = useState(null);
+  const {profileImageUri, setProfileImageUri} = useUser();
+  const [profileImagePicker, setProfileImagePicker] = useState(null);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -44,12 +45,15 @@ const ProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      setImageUri(result.assets[0].uri);
+      const imageUri = result.assets[0].uri;
+      setProfileImagePicker(imageUri);
+      setProfileImageUri(imageUri);
     }
   };
 
   const removeImage = () => {
-    setImageUri(null);
+    setProfileImagePicker(null);
+    setProfileImageUri(null);
   };
 
   const getInitials = () => {
@@ -107,7 +111,7 @@ const ProfileScreen = () => {
   const fetchUserData = async () => {
     try {
       const storedUserData = await AsyncStorage.getItem("userData");
-      console.log(storedUserData);
+      
       if (storedUserData !== null) {
         const parsedUserData = JSON.parse(storedUserData);
         setOriginalData(parsedUserData);
@@ -115,6 +119,7 @@ const ProfileScreen = () => {
         setUserEmail(parsedUserData.email || "");
         setLastName(parsedUserData.lastName || "");
         setPhoneNumber(parsedUserData.phoneNumber || "");
+        setProfileImageUri(parsedUserData.profileImageUri || null);
       }
     } catch (error) {
       console.log("Error fetching user data", error);
@@ -142,17 +147,17 @@ const ProfileScreen = () => {
     setUserEmail(originalData.email || "");
     setLastName(originalData.lastName || "");
     setPhoneNumber(originalData.phoneNumber || "");
-    setImageUri(originalData.imageUri || null);
+    setProfileImageUri(originalData.profileImageUri || null);
   };
 
   const saveChanges = async () => {
-    console.log("save changes");
+    
     const updatedUserData = {
       firstName,
       email: userEmail,
       lastName,
       phoneNumber,
-      imageUri,
+      profileImageUri,
     };
 
     try {
@@ -181,7 +186,7 @@ const ProfileScreen = () => {
       phoneNumber !== originalData.phoneNumber ||
       userEmail !== originalData.email ||
       lastName !== originalData.lastName ||
-      imageUri !== originalData.imageUri;
+      profileImageUri !== originalData.profileImageUri;
 
 
     return (
@@ -199,7 +204,7 @@ const ProfileScreen = () => {
       phoneNumber !== originalData.phoneNumber ||
       userEmail !== originalData.email ||
       lastName !== originalData.lastName ||
-      imageUri !== originalData.imageUri
+      profileImageUri !== originalData.profileImageUri
   )};
 
   if (!fontsLoaded) {
@@ -227,9 +232,9 @@ const ProfileScreen = () => {
               <Text style={styles.personalInfoText}>Personal Information</Text>
               <Text style={styles.text}>Avatar</Text>
               <View style={styles.avatarContainer}>
-                {imageUri ? (
+                {profileImageUri ? (
                   <Image
-                    source={{ uri: imageUri }}
+                    source={{ uri: profileImageUri }}
                     style={styles.profileImage}
                   />
                 ) : (
@@ -243,6 +248,14 @@ const ProfileScreen = () => {
                 >
                   <Text style = {styles.buttonTextEnabled}>
                     Change
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.removePicButton}                  
+                  onPress={removeImage}             
+                >
+                  <Text style = {styles.removePicText}>
+                    Remove
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -369,7 +382,7 @@ const ProfileScreen = () => {
                 <Text style={styles.textCheckbox}> Newsletter </Text>
               </View>
               <TouchableOpacity style={styles.logOutButton} onPress={logOut}>
-                <Text>LOGOUT</Text>
+                <Text>Log Out</Text>
               </TouchableOpacity>
               <View style={styles.bottomButtonsContainer}>
                 <TouchableOpacity
@@ -542,20 +555,16 @@ const styles = StyleSheet.create({
   },
   buttonTextEnabled: {
     color: "white",
-    fontSize: 14,
+    fontSize: 19,
     textAlign: "center",
+    fontFamily: "MarkaziText-Regular",
+    
   },
   buttonTextDisabled: {
     color: "#D3D3D3",
-    fontSize: 14,
+    fontSize: 19,
     textAlign: "center",
-  },
-  saveButtonEnabled: {
-    backgroundColor: "#495E57",
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    marginTop: 3,
+    fontFamily: "MarkaziText-Regular",
   },
   changePicButton: {
     backgroundColor: "#495E57",
@@ -564,7 +573,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 10,
-
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  removePicText:{
+    fontFamily: "MarkaziText-Regular",
+    fontSize: 19,
+  },
+  removePicButton: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: 'gray',
+    height: 40,
+    width: 90,
+    alignItems: 'center',
+    justifyContent: 'center',    
+    marginBottom: 10,
+    marginLeft: 10,
+  },
+  saveButtonEnabled: {
+    backgroundColor: "#495E57",
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    marginTop: 3,
+    fontFamily: "MarkaziText-Regular",
+    
   },
   saveButtonDisabled: {
     backgroundColor: "white",
@@ -574,6 +608,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     marginTop: 3,
+    
   },
   profileImage: {
     width: 80,

@@ -15,14 +15,16 @@ import { parse } from "@babel/core";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { getBackgroundColorAsync } from "expo-system-ui";
+import { useUser, UserProvider } from "../UserContext";
 
 export default function DrawerLayout() {
   const router = useRouter();
   const segments = useSegments();
+  const { profileImageUri } = useUser();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [profileImageUri, setProfileImageUri] = useState(null);
+  
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,8 +33,7 @@ export default function DrawerLayout() {
         if (storedUserData !== null) {
           const parsedUserData = JSON.parse(storedUserData);
           setFirstName(parsedUserData.firstName || "");
-          setLastName(parsedUserData.lastName || "");
-          setProfileImageUri(parsedUserData.profileImageUri || null);
+          setLastName(parsedUserData.lastName || "");          
         }
       } catch (e) {
         console.log("Error fetching user data", e);
