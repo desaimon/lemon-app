@@ -11,8 +11,9 @@ const OnboardingScreen = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const lastName = '';
+  const phoneNumber = ''; 
+  const imageUri = '';
   const [isValidName, setIsValidName] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);  
 
@@ -42,7 +43,7 @@ const OnboardingScreen = () => {
 
   const completeOnboarding = async () => {
     try {      
-      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email, lastName, phoneNumber}))
+      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email, lastName, phoneNumber, imageUri}))
       await AsyncStorage.setItem('@onboardingComplete', 'true');   
       router.replace('./(drawer)/profile'); 
     } catch(error) {
@@ -139,7 +140,7 @@ const styles = StyleSheet.create({
     flex: 5,
     alignItems: 'center',
     justifyContent: 'flex-end',
-    backgroundColor: '#bdbebd',
+    backgroundColor: 'white',
     paddingHorizontal: 20,
   },
   input: {
