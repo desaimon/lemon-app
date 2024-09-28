@@ -11,8 +11,13 @@ const OnboardingScreen = () => {
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [isValidName, setIsValidName] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(false);  
+
+ 
+
 
   const validateName = (name: string) => {
     setFirstName(name);
@@ -37,10 +42,8 @@ const OnboardingScreen = () => {
 
   const completeOnboarding = async () => {
     try {      
-      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email}))
-      await AsyncStorage.setItem('@userName', firstName);
-      await AsyncStorage.setItem('@userEmail', email);
-      await AsyncStorage.setItem('@onboardingComplete', 'true');  
+      await AsyncStorage.setItem('userData',JSON.stringify({firstName, email, lastName, phoneNumber}))
+      await AsyncStorage.setItem('@onboardingComplete', 'true');   
       router.replace('./(drawer)/profile'); 
     } catch(error) {
       console.log('onboarding issue', error);
