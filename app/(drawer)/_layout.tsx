@@ -53,8 +53,8 @@ export default function DrawerLayout() {
 
   const navigateToProfile = () => {
     // Ensure navigation is only triggered after the component is fully mounted
-    if (router && typeof router.push === "function") {
-      router.push("/(drawer)/profile");
+    if (router && typeof router.navigate === "function") {
+      router.navigate("/(drawer)/profile");
     }
   };
 
@@ -70,11 +70,15 @@ export default function DrawerLayout() {
               </View>
             </TouchableOpacity>
           )}
-          <Image
-            source={require("../../assets/images/Logo.png")}
-            style={styles.logo}
-          />
-          <TouchableOpacity onPress={navigateToProfile}>
+          <View style={styles.logoContainer}>
+            <Image
+              source={require("../../assets/images/Logo.png")}
+              style={styles.logo}
+            />
+          </View>
+          <TouchableOpacity 
+            style={styles.profileButtonContainer}
+            onPress={navigateToProfile}>
             {profileImageUri ? (
               <Image
                 source={{ uri: profileImageUri }}
@@ -136,6 +140,16 @@ const styles = StyleSheet.create({
   },
   logo: {
     resizeMode: "contain",
+  },
+  logoContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+  profileButtonContainer: {
+    position: "absolute",
+    right: 10,
+    top: 10,    
   },
   profileImage: {
     width: 40,

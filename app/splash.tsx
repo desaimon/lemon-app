@@ -12,7 +12,7 @@ const SplashScreen = () => {
         const onboardingComplete = await AsyncStorage.getItem('@onboardingComplete');
         console.log(onboardingComplete);
         if (onboardingComplete === 'true') {
-          router.replace('./(drawer)/profile');
+          router.replace('./(drawer)/home');
         } else {
           console.log('gotoonboarding');
           router.replace('./onboarding');
