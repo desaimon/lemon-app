@@ -35,7 +35,7 @@ const ProfileScreen = () => {
 
   const {profileImageUri, setProfileImageUri} = useUser();
   const [profileImagePicker, setProfileImagePicker] = useState(null);
-
+  console.log(segments);
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

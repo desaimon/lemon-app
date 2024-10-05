@@ -16,11 +16,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { getBackgroundColorAsync } from "expo-system-ui";
 import { useUser, UserProvider } from "../UserContext";
+import { createStackNavigator } from "@react-navigation/stack";
+import HomeScreen from "./home";
+import ProfileScreen from "./profile";
+const Stack = createStackNavigator();
 
 export default function DrawerLayout() {
   const router = useRouter();
   const segments = useSegments();
-  const { profileImageUri } = useUser();
+  const {profileImageUri, setProfileImageUri} = useUser();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -33,7 +37,8 @@ export default function DrawerLayout() {
         if (storedUserData !== null) {
           const parsedUserData = JSON.parse(storedUserData);
           setFirstName(parsedUserData.firstName || "");
-          setLastName(parsedUserData.lastName || "");          
+          setLastName(parsedUserData.lastName || ""); 
+          setProfileImageUri(parsedUserData.profileImageUri || null)         
         }
       } catch (e) {
         console.log("Error fetching user data", e);
@@ -92,31 +97,15 @@ export default function DrawerLayout() {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      <Drawer
+      <Stack.Navigator
         screenOptions={{
-          headerTintColor: "#fff",
-          headerTitleStyle: {
-            fontWeight: "bold",
-          },
-          headerShown: false,          
+          headerShown: false,  // Handle headers manually
         }}
       >
-        <Drawer.Screen
-          name="profile"
-          options={{
-            drawerLabel: "Profile",
-            title: "User Profile",
-          }}
-        />
-
-        <Drawer.Screen
-          name="home"
-          options={{
-            drawerLabel: "Home",
-            title: "Home Screen",
-          }}
-        />
-      </Drawer>
+        {/* Stack Screens */}
+        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Screen name="profile" component={ProfileScreen} />
+      </Stack.Navigator>
     </>
   );
 }
